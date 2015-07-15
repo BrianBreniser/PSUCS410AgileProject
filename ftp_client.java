@@ -106,9 +106,35 @@ public class ftp_client {
             } catch (IOException ex) {
                 System.out.println("Oops! Something wrong happened");
                 ex.printStackTrace();
-            }
 
+        command_loop();
+
+        }
     }
+
+    private static void command_loop() {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Command: ");
+
+        String commandInput = "";
+
+        while(true) {
+            commandInput = input.nextLine();
+
+            switch (commandInput) {
+                case "exit": exit();
+                
+                // case "user input": correspondingMethodName();
+            }
+        }
+    }
+
+    private static void exit() {
+        System.out.println("Thanks for using this FTP client!");
+        System.exit(0);
+    }
+
 }
 
 
