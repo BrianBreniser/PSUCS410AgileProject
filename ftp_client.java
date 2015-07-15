@@ -33,6 +33,8 @@ public class ftp_client {
         String server = "";
         String username = "";
         String password = "";
+        
+        authentication auth = new authentication();
 
         if (args.length == 0) {
             // if no arguments were passed in, prompt user for server, username, and password
@@ -44,15 +46,13 @@ public class ftp_client {
                 System.exit(1);
             }
             // get username
-            System.out.print("Username: ");
-            username = input.nextLine();
+            username = auth.getUsername();
             if (username == null) {
                 System.out.println("Critical Failure! Exiting program with exit code 2");
                 System.exit(2);
             }
             // get password
-            System.out.print("Password: ");
-            password = input.nextLine();
+            password = auth.getPassword();
             if (password == null) {
                 System.out.println("Critical Failure! Exiting program with exit code 3");
                 System.exit(3);
