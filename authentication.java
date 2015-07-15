@@ -9,35 +9,53 @@
 
 import java.io.*;
 import java.util.Scanner;
-import javax.swing.*;
 import java.security.*;
-
+	
 
 public class authentication {
 	
 	private Scanner input = new Scanner(System.in);
-	private JPasswordField passwordField = new JPasswordField(20);
 	private String user;
 	private String pass;
+	Console console = System.console();
+	
 
 	/* main() for testing purposes */
+	/*
 	public static void main(String [] args) {
 		System.out.println("Calling getCredentials()");
 		authentication cred = new authentication();
 		int ret = cred.getCredentials();
 	}
+	*/
 	
-	public int getCredentials() {
+	public String getUsername() {
 		
 		System.out.print("Username: ");
 		user = input.next();
-		System.out.print("Password: ");
-        pass = input.next();
-        
+		return user;
+	}
+	
+	public String getPassword() {
+
+		try {
+	        char [] passwordChar = console.readPassword("Password: ");
+	        pass = new String(passwordChar);
+		}
+		catch (NullPointerException e) {
+			System.out.print("Password: ");
+	        pass = input.next();
+		}
+
+		return pass;
+	}
+	
+	private int hashPassword(String pw) {
+	
         // Hash pw
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update(pass.getBytes());
+            messageDigest.update(pw.getBytes());
             String encryptedString = new String(messageDigest.digest());
         }
         catch (NoSuchAlgorithmException e) {
