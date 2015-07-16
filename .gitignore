@@ -12,3 +12,9 @@ hs_err_pid*
 
 # if using intellij idea, ignore the config file
 .idea/
+
+# more intellij crap
+.idea/*
+
+# more intellij crap
+*.iml
