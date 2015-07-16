@@ -11,9 +11,9 @@ Exit codes
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import java.util.Scanner;
 //import it.sauronsoftware.ftp4j.FTPClient;
 //import it.sauronsoftware.ftp4j.FTPReply;
-import java.util.Scanner;
 
 public class ftp_client {
 
@@ -98,7 +98,6 @@ public class ftp_client {
 
                 if (!success) {
                     System.out.println("Could not login to the server");
-                    return;
                 } else {
                     System.out.println("LOGGED IN SERVER");
                 }
@@ -117,7 +116,7 @@ public class ftp_client {
 
         System.out.print("Command: ");
 
-        String commandInput = "";
+        String commandInput;
 
         while(true) {
             commandInput = input.nextLine();
