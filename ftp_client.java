@@ -11,6 +11,7 @@ Exit codes
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import java.net.InetAddress;
 import java.util.Scanner;
 //import it.sauronsoftware.ftp4j.FTPClient;
 //import it.sauronsoftware.ftp4j.FTPReply;
@@ -24,6 +25,10 @@ public class ftp_client {
                 System.out.println("SERVER: " + aReply);
             }
         }
+    }
+
+    private static void setupFtp() {
+
     }
 
     public static void main(String[] args) {
@@ -84,6 +89,9 @@ public class ftp_client {
             FTPClient ftpClient = new FTPClient();
 
             try {
+                if(username.equals("testuser")) {
+                    port = 2121;
+                }
                 ftpClient.connect(server, port);
                 showServerReply(ftpClient);
                 int replyCode = ftpClient.getReplyCode();
@@ -105,33 +113,49 @@ public class ftp_client {
             } catch (IOException ex) {
                 System.out.println("Oops! Something wrong happened");
                 ex.printStackTrace();
+            }
 
-        command_loop();
+        command_loop(ftpClient);
 
-        }
     }
 
-    private static void command_loop() {
+    private static void command_loop(FTPClient f) {
         Scanner input = new Scanner(System.in);
-
-        System.out.print("Command: ");
 
         String commandInput;
 
         while(true) {
+            System.out.print("Command: ");
             commandInput = input.nextLine();
 
             switch (commandInput) {
                 case "exit": exit();
-                
+                case "get address": System.out.println(getRemoteAddress(f));
+
                 // case "user input": correspondingMethodName();
             }
         }
     }
 
+    /**
+     * Will exit the application with a message
+     */
     private static void exit() {
         System.out.println("Thanks for using this FTP client!");
         System.exit(0);
+    }
+
+    /**
+     * @param f FTPClient
+     * @return String
+     * Pass in an FTPClient object as an argument
+     * return, via a string, the remote address, may return qualified domain name,
+     * or ip address, depending on circumstances of the object and machine.
+     */
+    private static String getRemoteAddress(FTPClient f) {
+        InetAddress addr = f.getRemoteAddress();
+
+        return addr.getCanonicalHostName();
     }
 
 }
