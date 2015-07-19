@@ -1,3 +1,11 @@
+/*
+ * How to use this module:
+ * Run this program after running make:
+ *   java -cp .:./lib:./lib/commons-net-3.3.jar -ea test
+ * need the -ea options or else the assert statements WILL NOT RUN
+ * I recommend doing this from the command line
+ * in intellij IDEA it works in the included terminal, alt+f12
+ */
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
