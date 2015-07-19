@@ -16,6 +16,8 @@ public class test {
      * will run the test suite against a localhost ftp server with static username and password
      */
     public static void main(String[] args) {
+
+        // Run the ftp server that we will test with
         Process pr = null;
         if (args.length > 0) {
             thesystem = args[0];
@@ -31,27 +33,35 @@ public class test {
             ex.printStackTrace();
         }
 
+        // build our ftp client
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        ftp_client ftp = new ftp_client();
+        ftp.directSetupArgs("localhost", "testuser", "password", 2121);
+        ftp.setupFtp();
 
         /*
-         * Run your tests in here, please label what the test should do
+         * Run your tests in here, please label what the test should do ------------------
          */
 
-        assert(1 == 1);
+        // Some formatting to make finding errors easier
+        System.out.println();
+        System.out.println();
+        System.out.println(" --------- Errors: -----------");
+        System.out.println();
 
+        assert (ftp.getRemoteAddress().equals("localhost"));
+
+        /*
+         * Done running tests here -------------------------------------------------------
+         */
+
+        // end formatting errors
+        System.out.println();
+        System.out.println(" No Errors :) ");
+        System.out.println();
+        System.out.println();
+
+        // kill the ftp server if it was successfully made
         if(pr != null) {
             pr.destroy();
         }

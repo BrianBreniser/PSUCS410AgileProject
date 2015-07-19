@@ -18,6 +18,19 @@ import java.util.Scanner;
 
 public class ftp_client {
 
+    private static String server;
+    private static String username;
+    private static String password;
+    private static int port = 21;
+    private static FTPClient ftpClient = new FTPClient();
+
+    public static void directSetupArgs(String ser, String use, String pass, int por) {
+        server = ser;
+        username = use;
+        password = pass;
+        port = por;
+    }
+
     private static void showServerReply(FTPClient ftpClient) {
         String[] replies = ftpClient.getReplyStrings();
         if (replies != null && replies.length > 0) {
@@ -27,18 +40,9 @@ public class ftp_client {
         }
     }
 
-    private static void setupFtp() {
-
-    }
-
-    public static void main(String[] args) {
+    private static void setupServerUnamePass(String[] args) {
         Scanner input = new Scanner(System.in);
 
-        int port = 21;
-        String server = "";
-        String username = "";
-        String password = "";
-        
         authentication auth = new authentication();
 
         if (args.length == 0) {
@@ -62,59 +66,69 @@ public class ftp_client {
                 System.out.println("Critical Failure! Exiting program with exit code 3");
                 System.exit(3);
             }
-            } else if (args.length == 1) {
-                // User provided server
-                server = args[0];
-                // get username
-                System.out.print("Username: ");
-                username = input.nextLine();
-                if (username == null) {
-                    System.out.println("Critical Failure! Exiting program with exit code 2");
-                    System.exit(2);
-                }
+        } else if (args.length == 1) {
+            // User provided server
+            server = args[0];
+            // get username
+            System.out.print("Username: ");
+            username = input.nextLine();
+            if (username == null) {
+                System.out.println("Critical Failure! Exiting program with exit code 2");
+                System.exit(2);
+            }
 
-                // get password
-                System.out.print("Password: ");
-                password = input.nextLine();
-                if (password == null) {
-                    System.out.println("Critical Failure! Exiting program with exit code 3");
-                    System.exit(3);
-                }
+            // get password
+            System.out.print("Password: ");
+            password = input.nextLine();
+            if (password == null) {
+                System.out.println("Critical Failure! Exiting program with exit code 3");
+                System.exit(3);
+            }
+        } else {
+            // Invalid arguments
+            System.out.println("Invalid arguments. Only arguments should be server name");
+            System.exit(4);
+        }
+    }
+
+    public static void setupFtp() {
+        try {
+            if(username.equals("testuser")) {
+                port = 2121;
+            }
+            ftpClient.connect(server, port);
+            showServerReply(ftpClient);
+            int replyCode = ftpClient.getReplyCode();
+
+            if (!FTPReply.isPositiveCompletion(replyCode)) {
+                System.out.println("Operation failed. Server reply code: " + replyCode);
+                return;
+            }
+
+            boolean success = ftpClient.login(username, password);
+            showServerReply(ftpClient);
+
+            if (!success) {
+                System.out.println("Could not login to the server");
             } else {
-                // Invalid arguments
-                System.out.println("Invalid arguments. Only arguments should be server name");
-                System.exit(4);
+                System.out.println("LOGGED IN SERVER");
             }
 
-            FTPClient ftpClient = new FTPClient();
+        } catch (IOException ex) {
+            System.out.println("Oops! Something wrong happened");
+            ex.printStackTrace();
+        }
 
-            try {
-                if(username.equals("testuser")) {
-                    port = 2121;
-                }
-                ftpClient.connect(server, port);
-                showServerReply(ftpClient);
-                int replyCode = ftpClient.getReplyCode();
+    }
 
-                if (!FTPReply.isPositiveCompletion(replyCode)) {
-                    System.out.println("Operation failed. Server reply code: " + replyCode);
-                    return;
-                }
+    public static void main(String[] args) {
+        // Set up server, username, and password to prepare FTP client
+        setupServerUnamePass(args);
 
-                boolean success = ftpClient.login(username, password);
-                showServerReply(ftpClient);
+        // Set up ftp client with parameters
+        setupFtp();
 
-                if (!success) {
-                    System.out.println("Could not login to the server");
-                } else {
-                    System.out.println("LOGGED IN SERVER");
-                }
-
-            } catch (IOException ex) {
-                System.out.println("Oops! Something wrong happened");
-                ex.printStackTrace();
-            }
-
+        // grab commands and do stuff for the user
         command_loop(ftpClient);
 
     }
@@ -130,7 +144,7 @@ public class ftp_client {
 
             switch (commandInput) {
                 case "exit": exit();
-                case "get address": System.out.println(getRemoteAddress(f));
+                case "get address": System.out.println(getRemoteAddress());
 
                 // case "user input": correspondingMethodName();
             }
@@ -140,7 +154,7 @@ public class ftp_client {
     /**
      * Will exit the application with a message
      */
-    private static void exit() {
+    public static void exit() {
         System.out.println("Thanks for using this FTP client!");
         System.exit(0);
     }
@@ -152,8 +166,8 @@ public class ftp_client {
      * return, via a string, the remote address, may return qualified domain name,
      * or ip address, depending on circumstances of the object and machine.
      */
-    private static String getRemoteAddress(FTPClient f) {
-        InetAddress addr = f.getRemoteAddress();
+    public static String getRemoteAddress() {
+        InetAddress addr = ftpClient.getRemoteAddress();
 
         return addr.getCanonicalHostName();
     }
