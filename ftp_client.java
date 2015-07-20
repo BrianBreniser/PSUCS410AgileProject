@@ -9,6 +9,7 @@ Exit codes
 4   User provided invalid arguments when running the program
 */
 import java.io.IOException;
+import java.io.FileOutputStream;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import java.net.InetAddress;
@@ -42,7 +43,6 @@ public class ftp_client {
 
     private static void setupServerUnamePass(String[] args) {
         Scanner input = new Scanner(System.in);
-
         authentication auth = new authentication();
 
         if (args.length == 0) {
@@ -70,16 +70,14 @@ public class ftp_client {
             // User provided server
             server = args[0];
             // get username
-            System.out.print("Username: ");
-            username = input.nextLine();
+            username = auth.getUsername();
             if (username == null) {
                 System.out.println("Critical Failure! Exiting program with exit code 2");
                 System.exit(2);
             }
 
             // get password
-            System.out.print("Password: ");
-            password = input.nextLine();
+            password = auth.getPassword();
             if (password == null) {
                 System.out.println("Critical Failure! Exiting program with exit code 3");
                 System.exit(3);
@@ -137,6 +135,7 @@ public class ftp_client {
         Scanner input = new Scanner(System.in);
 
         String commandInput;
+        String getFilePattern = "get \\w.*";
 
         while(true) {
             System.out.print("Command: ");
@@ -144,9 +143,23 @@ public class ftp_client {
 
             switch (commandInput) {
                 case "exit": exit();
-                case "get address": System.out.println(getRemoteAddress());
-
+                case "get address": 
+                	System.out.println(getRemoteAddress());
+                	break;
+                	
                 // case "user input": correspondingMethodName();
+                	
+                default:
+                	if (commandInput.matches(getFilePattern)) {
+                		try {
+                    		if (!getFile(commandInput)) {
+                    			System.out.println("Could not get file(s) from remote server!");
+                    		}
+                		} catch (IOException e) {
+                			System.out.println("I/O error getting remote file!");
+                		}
+
+                	}
             }
         }
     }
@@ -168,10 +181,33 @@ public class ftp_client {
      */
     public static String getRemoteAddress() {
         InetAddress addr = ftpClient.getRemoteAddress();
-
         return addr.getCanonicalHostName();
     }
+    
+    /**
+     * @param String
+     * @return boolean
+     * Pass in input String (may contain multiple words)
+     * Get remote file and write it locally as same-named file.
+     * If another name is specified after the filename-to-get, write to that name.
+     */
+    public static boolean getFile(String input) throws IOException {
+    	boolean retval = false;
+    	FileOutputStream out;
+    	String [] splitInput = input.split("\\s+");
 
+    	if (splitInput.length > 2) {
+    		out = new FileOutputStream(splitInput[2]);
+    	}
+    	else {
+    		out = new FileOutputStream(splitInput[1]);
+    	}
+
+    	retval = ftpClient.retrieveFile(splitInput[1], out);
+    	out.close();
+    	
+    	return retval;
+    }
 }
 
 
