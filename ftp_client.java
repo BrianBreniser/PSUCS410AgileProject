@@ -7,6 +7,7 @@ Exit codes
 2   IOException on user input for username
 3   IOException on user input for password
 4   User provided invalid arguments when running the program
+5   Directory creation failure
 */
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
@@ -121,6 +122,26 @@ public class ftp_client {
 
     }
 
+    //Creates a new directory and makes it the current working directory
+    public static void createDirectory(FTPClient f, String dir) throws IOException {
+	
+	//Check whether or not the directory already exists by attempting to navigate to it
+	boolean exists = f.changeWorkingDirectory(dir);
+		
+	if(!exists) {
+	    if(!f.makeDirectory(dir)) {
+		    throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
+		}
+
+	    if(!f.changeWorkingDirectory(dir)) {
+		    throw new IOException("Failed to change to directory" + dir + " error=" + f.getReplyString());
+	    }
+	}
+    }
+
+    
+
+
     public static void main(String[] args) {
         // Set up server, username, and password to prepare FTP client
         setupServerUnamePass(args);
@@ -137,16 +158,33 @@ public class ftp_client {
         Scanner input = new Scanner(System.in);
 
         String commandInput;
+	String dirName;
 
         while(true) {
-            System.out.print("Command: ");
-            commandInput = input.nextLine();
+	    try {
+                System.out.print("Command: ");
+                commandInput = input.nextLine();
 
-            switch (commandInput) {
-                case "exit": exit();
-                case "get address": System.out.println(getRemoteAddress());
-
+                switch (commandInput) {
+                    case "exit": 
+		        exit();
+		        break;
+                    case "get address": 
+		        System.out.println(getRemoteAddress());
+		        break;
+		    case "create dir":
+		        System.out.print("Directory name: ");
+		        dirName = input.nextLine();
+		        createDirectory(f, dirName);
+		        break;
+	      
                 // case "user input": correspondingMethodName();
+                }
+	    }
+            catch (IOException ex) {
+            System.out.println("Oops! Something wrong happened");
+            ex.printStackTrace();
+	
             }
         }
     }
