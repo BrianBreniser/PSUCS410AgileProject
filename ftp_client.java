@@ -129,15 +129,15 @@ public class ftp_client {
 	//Check whether or not the directory already exists by attempting to navigate to it
 	boolean exists = f.changeWorkingDirectory(dir);
 
-	if(!exists) {
-	    if(!f.makeDirectory(dir)) {
-		    throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
-		}
+	    if(!exists) {
+	        if(!f.makeDirectory(dir)) {
+		        throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
+		    }
 
-	    if(!f.changeWorkingDirectory(dir)) {
-		    throw new IOException("Failed to change to directory" + dir + " error=" + f.getReplyString());
+	        if(!f.changeWorkingDirectory(dir)) {
+		        throw new IOException("Failed to change to directory" + dir + " error=" + f.getReplyString());
+	        }
 	    }
-	}
     }
 
     
@@ -166,18 +166,18 @@ public class ftp_client {
                 System.out.print("Command: ");
                 commandInput = input.nextLine();
 
-                switch (commandInput) {
-                    case "exit":
-		        exit();
-		        break;
-                    case "get address": 
-		        System.out.println(getRemoteAddress());
-		        break;
-		    case "create dir":
-		        System.out.print("Directory name: ");
-		        dirName = input.nextLine();
-		        createDirectory(f, dirName);
-		        break;
+            switch (commandInput) {
+                case "exit":
+		            exit();
+		            break;
+                case "get address":
+		            System.out.println(getRemoteAddress());
+		            break;
+		        case "create dir":
+		            System.out.print("Directory name: ");
+		            dirName = input.nextLine();
+		            createDirectory(f, dirName);
+		            break;
 	      
                 // case "user input": correspondingMethodName();
                 }
