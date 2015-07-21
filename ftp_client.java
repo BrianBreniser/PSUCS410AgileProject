@@ -14,6 +14,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import java.net.InetAddress;
 import java.util.Scanner;
+
 //import it.sauronsoftware.ftp4j.FTPClient;
 //import it.sauronsoftware.ftp4j.FTPReply;
 
@@ -71,16 +72,14 @@ public class ftp_client {
             // User provided server
             server = args[0];
             // get username
-            System.out.print("Username: ");
-            username = input.nextLine();
+            username = auth.getUsername();
             if (username == null) {
                 System.out.println("Critical Failure! Exiting program with exit code 2");
                 System.exit(2);
             }
 
             // get password
-            System.out.print("Password: ");
-            password = input.nextLine();
+            password = auth.getPassword();
             if (password == null) {
                 System.out.println("Critical Failure! Exiting program with exit code 3");
                 System.exit(3);
@@ -127,7 +126,7 @@ public class ftp_client {
 	
 	//Check whether or not the directory already exists by attempting to navigate to it
 	boolean exists = f.changeWorkingDirectory(dir);
-		
+
 	if(!exists) {
 	    if(!f.makeDirectory(dir)) {
 		    throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
@@ -166,7 +165,7 @@ public class ftp_client {
                 commandInput = input.nextLine();
 
                 switch (commandInput) {
-                    case "exit": 
+                    case "exit":
 		        exit();
 		        break;
                     case "get address": 
