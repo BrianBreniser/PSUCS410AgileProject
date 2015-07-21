@@ -8,6 +8,7 @@ Exit codes
 3   IOException on user input for password
 4   User provided invalid arguments when running the program
 5   Directory creation failure
+6   Failed to connect
 */
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
@@ -117,6 +118,7 @@ public class ftp_client {
         } catch (IOException ex) {
             System.out.println("Oops! Something wrong happened");
             ex.printStackTrace();
+            System.exit(6);
         }
 
     }
@@ -157,7 +159,7 @@ public class ftp_client {
         Scanner input = new Scanner(System.in);
 
         String commandInput;
-	String dirName;
+	    String dirName;
 
         while(true) {
 	    try {
@@ -183,7 +185,6 @@ public class ftp_client {
             catch (IOException ex) {
             System.out.println("Oops! Something wrong happened");
             ex.printStackTrace();
-	
             }
         }
     }
