@@ -125,19 +125,19 @@ public class ftp_client {
 
     //Creates a new directory and makes it the current working directory
     public static void createDirectory(FTPClient f, String dir) throws IOException {
-	
-	//Check whether or not the directory already exists by attempting to navigate to it
-	boolean exists = f.changeWorkingDirectory(dir);
 
-	    if(!exists) {
-	        if(!f.makeDirectory(dir)) {
-		        throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
-		    }
+    //Check whether or not the directory already exists by attempting to navigate to it
+    boolean exists = f.changeWorkingDirectory(dir);
 
-	        if(!f.changeWorkingDirectory(dir)) {
-		        throw new IOException("Failed to change to directory" + dir + " error=" + f.getReplyString());
-	        }
-	    }
+        if(!exists) {
+            if(!f.makeDirectory(dir)) {
+                throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
+            }
+
+            if(!f.changeWorkingDirectory(dir)) {
+                throw new IOException("Failed to change to directory" + dir + " error=" + f.getReplyString());
+            }
+        }
     }
 
     
@@ -159,44 +159,44 @@ public class ftp_client {
         Scanner input = new Scanner(System.in);
 
         String commandInput;
-	    String dirName;
+        String dirName;
         String getFilePattern = "get \\w.*";
 
         while(true) {
-	    try {
+        try {
                 System.out.print("Command: ");
                 commandInput = input.nextLine();
 
             switch (commandInput) {
                 case "exit":
-		            exit();
-		            break;
+                    exit();
+                    break;
                 case "get address":
-		            System.out.println(getRemoteAddress());
-		            break;
-		        case "create dir":
-		            System.out.print("Directory name: ");
-		            dirName = input.nextLine();
-		            createDirectory(f, dirName);
-		            break;
-	      
+                    System.out.println(getRemoteAddress());
+                    break;
+                case "create dir":
+                    System.out.print("Directory name: ");
+                    dirName = input.nextLine();
+                    createDirectory(f, dirName);
+                    break;
+
                 // case "user input": correspondingMethodName();
 
                 default:
-                	if (commandInput.matches(getFilePattern)) {
-                		try {
-                    		if (!getFile(commandInput)) {
-                    			System.out.println("Could not get file(s) from remote server!");
-                    		}
-                		} catch (IOException e) {
-                			System.out.println("I/O error getting remote file!");
-                		}
+                    if (commandInput.matches(getFilePattern)) {
+                        try {
+                            if (!getFile(commandInput)) {
+                                System.out.println("Could not get file(s) from remote server!");
+                            }
+                        } catch (IOException e) {
+                            System.out.println("I/O error getting remote file!");
+                        }
 
-                	}
+                    }
 
 
                 }
-	    }
+        }
             catch (IOException ex) {
             System.out.println("Oops! Something wrong happened");
             ex.printStackTrace();
@@ -233,22 +233,20 @@ public class ftp_client {
      * If another name is specified after the filename-to-get, write to that name.
      */
     public static boolean getFile(String input) throws IOException {
-    	boolean retval = false;
-    	FileOutputStream out;
-    	String [] splitInput = input.split("\\s+");
+        boolean retval = false;
+        FileOutputStream out;
+        String [] splitInput = input.split("\\s+");
 
-    	if (splitInput.length > 2) {
-    		out = new FileOutputStream(splitInput[2]);
-    	}
-    	else {
-    		out = new FileOutputStream(splitInput[1]);
-    	}
+        if (splitInput.length > 2) {
+            out = new FileOutputStream(splitInput[2]);
+        }
+        else {
+            out = new FileOutputStream(splitInput[1]);
+        }
 
-    	retval = ftpClient.retrieveFile(splitInput[1], out);
-    	out.close();
-    	
-    	return retval;
+        retval = ftpClient.retrieveFile(splitInput[1], out);
+        out.close();
+
+        return retval;
     }
 }
-
-
