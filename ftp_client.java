@@ -12,6 +12,7 @@ Exit codes
 */
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import java.net.InetAddress;
@@ -161,6 +162,7 @@ public class ftp_client {
         String commandInput;
         String dirName;
         String getFilePattern = "get \\w.*";
+        String putFilePattern = "put \\w.*";
 
         while(true) {
         try {
@@ -190,6 +192,16 @@ public class ftp_client {
                             }
                         } catch (IOException e) {
                             System.out.println("I/O error getting remote file!");
+                        }
+
+                    }
+                    if (commandInput.matches(putFilePattern)) {
+                        try {
+                            if (!putFile(commandInput)) {
+                                System.out.println("Could not put file(s) from remote server!");
+                            }
+                        } catch (IOException e) {
+                            System.out.println("I/O error putting remote file!");
                         }
 
                     }
@@ -248,5 +260,29 @@ public class ftp_client {
         out.close();
 
         return retval;
+    }
+    
+    /**
+     * @param String
+     * @return boolean
+     * Pass in input String (may contain multiple words)
+     * Get local file and write it to remote server as same-named file.
+     * If another name is specified before the filename-to-get, write to that name.
+     */
+    public static boolean putFile(String input) throws IOException {
+    	boolean retval = false;
+        String [] splitInput = input.split("\\s+");
+        FileInputStream in;
+
+        if (splitInput.length > 2) {
+            in = new FileInputStream(splitInput[2]);
+        }
+        else {
+            in = new FileInputStream(splitInput[1]);
+        }
+
+        retval = ftpClient.storeFile(splitInput[1], in);
+        in.close();
+    	return retval;
     }
 }

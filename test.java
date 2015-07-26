@@ -59,13 +59,24 @@ public class test {
 
         assert (ftp.getRemoteAddress().equals("localhost"));
 
+        /* Test getFile() and putFile(). Methods throw IO exception, so tests must be able to catch end.
+         * Just uses simple "test.txt".  Since test ftp server is running locally (and in same directory
+         * as execution) the file will already be there.  I simply checked the files modification date
+         * to assure the tests ran and updated file.  If failed, they would throw an exception anywho, or
+         * return false, depending on the error.
+         */
         try {
             assert (ftp.getFile("test.txt") == true);
         } catch (IOException ex) {
             System.out.println("Error testing getFile()");
             ex.printStackTrace();
         }
-
+        try {
+            assert (ftp.putFile("test.txt") == true);
+        } catch (IOException ex) {
+            System.out.println("Error testing putFile()");
+            ex.printStackTrace();
+        }
         
         /*
          * Done running tests here -------------------------------------------------------
