@@ -59,6 +59,14 @@ public class test {
 
         assert (ftp.getRemoteAddress().equals("localhost"));
 
+        try {
+            assert (ftp.getFile("test.txt") == true);
+        } catch (IOException ex) {
+            System.out.println("Error testing getFile()");
+            ex.printStackTrace();
+        }
+
+        
         /*
          * Done running tests here -------------------------------------------------------
          */
