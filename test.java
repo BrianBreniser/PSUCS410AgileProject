@@ -80,16 +80,23 @@ public class test {
 
 	// tests related to making a directory on the ftp server
 	// 1. create a directory in the current working directory
-	// 2. create a directory with a relative path
-	// 3. create a directory with an absolute path
+	// 2. create a directory that exists
+	// 3. create a directory with a relative path
+	// 4. create a directory along a path that partially exists
 
 	try {
-		assert (ftp.createDirectory("./test") == true); 
+		assert (ftp.createDirectory("test") == true); 
 	} catch (IOException ex) {
 		System.out.println("Unable to create directory");
 		ex.printStackTrace();
 	}       
 
+	try {
+		assert (ftp.createDirectory("test") == true); 
+	} catch (IOException ex) {
+		System.out.println("Creating a directory that exists failed");
+		ex.printStackTrace();
+	}       
 	try {
 		assert (ftp.createDirectory("./test1/test2/test3") == true); 
 	} catch (IOException ex) {
@@ -97,14 +104,12 @@ public class test {
 		ex.printStackTrace();
 	}       
 
-	/*
 	try {
-		assert (ftp.createDirectory(ftp, "test") == true); 
+		assert (ftp.createDirectory("./test1/test2/test3/test4/test5") == true); 
 	} catch (IOException ex) {
 		System.out.println("Unable to create directory");
 		ex.printStackTrace();
 	}       
-	*/
 
         /*
          * Done running tests here -------------------------------------------------------

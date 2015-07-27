@@ -188,7 +188,7 @@ public class ftp_client {
                     System.out.println(getRemoteAddress());
                     break;
                 case "create dir":
-                    System.out.print("Directory name: ");
+                    System.out.print("Directory name or relative path: ");
                     dirName = input.nextLine();
                     createDirectory(dirName);
                     break;
