@@ -77,7 +77,35 @@ public class test {
             System.out.println("Error testing putFile()");
             ex.printStackTrace();
         }
-        
+
+	// tests related to making a directory on the ftp server
+	// 1. create a directory in the current working directory
+	// 2. create a directory with a relative path
+	// 3. create a directory with an absolute path
+
+	try {
+		assert (ftp.createDirectory("./test") == true); 
+	} catch (IOException ex) {
+		System.out.println("Unable to create directory");
+		ex.printStackTrace();
+	}       
+
+	try {
+		assert (ftp.createDirectory("./test1/test2/test3") == true); 
+	} catch (IOException ex) {
+		System.out.println("Unable to create directory");
+		ex.printStackTrace();
+	}       
+
+	/*
+	try {
+		assert (ftp.createDirectory(ftp, "test") == true); 
+	} catch (IOException ex) {
+		System.out.println("Unable to create directory");
+		ex.printStackTrace();
+	}       
+	*/
+
         /*
          * Done running tests here -------------------------------------------------------
          */

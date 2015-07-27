@@ -124,23 +124,34 @@ public class ftp_client {
 
     }
 
-    //Creates a new directory and makes it the current working directory
-    public static void createDirectory(FTPClient f, String dir) throws IOException {
+    //Creates a new directory on the ftp server
+    public static boolean createDirectory(String dirPath) throws IOException {
 
-    //Check whether or not the directory already exists by attempting to navigate to it
-    boolean exists = f.changeWorkingDirectory(dir);
+    boolean exists;
+    String root = ftpClient.printWorkingDirectory();
+    String[] directories = dirPath.split("/");
 
-        if(!exists) {
-            if(!f.makeDirectory(dir)) {
-                throw new IOException("Failed to create directory" + dir + " error=" + f.getReplyString());
-            }
+	//for each piece of the path, check whether or not the dir exists.  If not, make it.
+        for( String dir : directories ) {
+		exists = ftpClient.changeWorkingDirectory(dir);	
+		
+                if(exists) {
+			continue;
+		}
+		else {
+			if(!ftpClient.makeDirectory(dir)) {
+                            throw new IOException("Failed to create directory" + dirPath + " error=" + ftpClient.getReplyString());
+			}
+			if(!ftpClient.changeWorkingDirectory(dir)) {
+                            throw new IOException("Failed to change to directory" + dirPath + " error=" + ftpClient.getReplyString());
+			}
 
-            if(!f.changeWorkingDirectory(dir)) {
-                throw new IOException("Failed to change to directory" + dir + " error=" + f.getReplyString());
-            }
+		}
         }
+	//change back the current working directory back to where it started.
+	ftpClient.changeWorkingDirectory(root);
+	return true;
     }
-
     
 
 
@@ -179,7 +190,7 @@ public class ftp_client {
                 case "create dir":
                     System.out.print("Directory name: ");
                     dirName = input.nextLine();
-                    createDirectory(f, dirName);
+                    createDirectory(dirName);
                     break;
 
                 // case "user input": correspondingMethodName();
