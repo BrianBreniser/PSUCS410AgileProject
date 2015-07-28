@@ -66,13 +66,13 @@ public class test {
          * return false, depending on the error.
          */
         try {
-            assert (ftp.getFile("test.txt") == true);
+            assert (ftp.getFile("get test.txt") == true);
         } catch (IOException ex) {
             System.out.println("Error testing getFile()");
             ex.printStackTrace();
         }
         try {
-            assert (ftp.putFile("test.txt") == true);
+            assert (ftp.putFile("get test.txt") == true);
         } catch (IOException ex) {
             System.out.println("Error testing putFile()");
             ex.printStackTrace();
