@@ -13,6 +13,7 @@ Exit codes
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.File;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import java.net.InetAddress;
@@ -95,7 +96,7 @@ public class ftp_client {
 
     public static void setupFtp() {
         try {
-            if(username.equals("testuser")) {
+            if (username.equals("testuser")) {
                 port = 2121;
             }
             ftpClient.connect(server, port);
@@ -127,32 +128,30 @@ public class ftp_client {
     //Creates a new directory on the ftp server
     public static boolean createDirectory(String dirPath) throws IOException {
 
-    boolean exists;
-    String root = ftpClient.printWorkingDirectory();
-    String[] directories = dirPath.split("/");
+        boolean exists;
+        String root = ftpClient.printWorkingDirectory();
+        String[] directories = dirPath.split("/");
 
-	//for each piece of the path, check whether or not the dir exists.  If not, make it.
-        for( String dir : directories ) {
-		exists = ftpClient.changeWorkingDirectory(dir);	
-		
-                if(exists) {
-			continue;
-		}
-		else {
-			if(!ftpClient.makeDirectory(dir)) {
-                            throw new IOException("Failed to create directory" + dirPath + " error=" + ftpClient.getReplyString());
-			}
-			if(!ftpClient.changeWorkingDirectory(dir)) {
-                            throw new IOException("Failed to change to directory" + dirPath + " error=" + ftpClient.getReplyString());
-			}
+        //for each piece of the path, check whether or not the dir exists.  If not, make it.
+        for (String dir : directories) {
+            exists = ftpClient.changeWorkingDirectory(dir);
 
-		}
+            if (exists) {
+                continue;
+            } else {
+                if (!ftpClient.makeDirectory(dir)) {
+                    throw new IOException("Failed to create directory" + dirPath + " error=" + ftpClient.getReplyString());
+                }
+                if (!ftpClient.changeWorkingDirectory(dir)) {
+                    throw new IOException("Failed to change to directory" + dirPath + " error=" + ftpClient.getReplyString());
+                }
+
+            }
         }
-	//change back the current working directory back to where it started.
-	ftpClient.changeWorkingDirectory(root);
-	return true;
+        //change back the current working directory back to where it started.
+        ftpClient.changeWorkingDirectory(root);
+        return true;
     }
-    
 
 
     public static void main(String[] args) {
@@ -169,60 +168,64 @@ public class ftp_client {
 
     private static void command_loop(FTPClient f) {
         Scanner input = new Scanner(System.in);
-
+        // userdir sets up a default location for the users current directory
+        // on the local machine.
+        String currentDir = System.getProperty("user.dir");
         String commandInput;
         String dirName;
         String getFilePattern = "get \\w.*";
         String putFilePattern = "put \\w.*";
 
-        while(true) {
-        try {
+        while (true) {
+            try {
                 System.out.print("Command: ");
                 commandInput = input.nextLine();
 
-            switch (commandInput) {
-                case "exit":
-                    exit();
-                    break;
-                case "get address":
-                    System.out.println(getRemoteAddress());
-                    break;
-                case "create dir":
-                    System.out.print("Directory name or relative path: ");
-                    dirName = input.nextLine();
-                    createDirectory(dirName);
-                    break;
+                switch (commandInput) {
+                    case "exit":
+                        exit();
+                        break;
+                    case "get address":
+                        System.out.println(getRemoteAddress());
+                        break;
+                    case "create dir":
+                        System.out.print("Directory name or relative path: ");
+                        dirName = input.nextLine();
+                        createDirectory(dirName);
+                        break;
+                    case "list local":
+                        listLocalFiles(currentDir);
+                        break;
 
-                // case "user input": correspondingMethodName();
+                    // case "user input": correspondingMethodName();
 
-                default:
-                    if (commandInput.matches(getFilePattern)) {
-                        try {
-                            if (!getFile(commandInput)) {
-                                System.out.println("Could not get file(s) from remote server!");
+                    default:
+                        if (commandInput.matches(getFilePattern)) {
+                            try {
+                                if (!getFile(commandInput)) {
+                                    System.out.println("Could not get file(s) from remote server!");
+                                }
+                            } catch (IOException e) {
+                                System.out.println("I/O error getting remote file!");
                             }
-                        } catch (IOException e) {
-                            System.out.println("I/O error getting remote file!");
-                        }
 
-                    }
-                    if (commandInput.matches(putFilePattern)) {
-                        try {
-                            if (!putFile(commandInput)) {
-                                System.out.println("Could not put file(s) from remote server!");
+                        }
+                        if (commandInput.matches(putFilePattern)) {
+                            try {
+                                if (!putFile(commandInput)) {
+                                    System.out.println("Could not put file(s) from remote server!");
+                                }
+                            } catch (IOException e) {
+                                System.out.println("I/O error putting remote file!");
                             }
-                        } catch (IOException e) {
-                            System.out.println("I/O error putting remote file!");
-                        }
 
-                    }
+                        }
 
 
                 }
-        }
-            catch (IOException ex) {
-            System.out.println("Oops! Something wrong happened");
-            ex.printStackTrace();
+            } catch (IOException ex) {
+                System.out.println("Oops! Something wrong happened");
+                ex.printStackTrace();
 
             }
         }
@@ -247,7 +250,7 @@ public class ftp_client {
         InetAddress addr = ftpClient.getRemoteAddress();
         return addr.getCanonicalHostName();
     }
-    
+
     /**
      * @param String
      * @return boolean
@@ -258,12 +261,11 @@ public class ftp_client {
     public static boolean getFile(String input) throws IOException {
         boolean retval = false;
         FileOutputStream out;
-        String [] splitInput = input.split("\\s+");
+        String[] splitInput = input.split("\\s+");
 
         if (splitInput.length > 2) {
             out = new FileOutputStream(splitInput[2]);
-        }
-        else {
+        } else {
             out = new FileOutputStream(splitInput[1]);
         }
 
@@ -272,7 +274,7 @@ public class ftp_client {
 
         return retval;
     }
-    
+
     /**
      * @param String
      * @return boolean
@@ -281,19 +283,41 @@ public class ftp_client {
      * If another name is specified before the filename-to-get, write to that name.
      */
     public static boolean putFile(String input) throws IOException {
-    	boolean retval = false;
-        String [] splitInput = input.split("\\s+");
+        boolean retval = false;
+        String[] splitInput = input.split("\\s+");
         FileInputStream in;
 
         if (splitInput.length > 2) {
             in = new FileInputStream(splitInput[2]);
-        }
-        else {
+        } else {
             in = new FileInputStream(splitInput[1]);
         }
 
         retval = ftpClient.storeFile(splitInput[1], in);
         in.close();
-    	return retval;
+        return retval;
+    }
+
+    /**
+     * @param String
+     * @return File[]
+     * The currentDirectory the user is in is passed to this function. It then lists
+     * all files and directories contained in the currentDirectory. f: denotes a file
+     * d: denotes a directory.
+     */
+
+    public static File[] listLocalFiles(String userdir) {
+        File folder = new File(userdir);
+        File[] fileList = folder.listFiles();
+        System.out.println("Current Directory: " + userdir);
+        for (int i = 0; i < fileList.length; i++) {
+            if (fileList[i].isFile()) {
+                System.out.println("f: " + fileList[i].getName());
+            }
+            if (fileList[i].isDirectory()) {
+                System.out.println("d: " + fileList[i].getName());
+            }
+        }
+        return fileList;
     }
 }
