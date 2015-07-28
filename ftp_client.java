@@ -96,7 +96,7 @@ public class ftp_client {
     public static void setupFtp() {
         try {
             if(username.equals("testuser")) {
-                port = 2121;
+                port = 3131;
             }
             ftpClient.connect(server, port);
             showServerReply(ftpClient);
@@ -140,10 +140,10 @@ public class ftp_client {
         }
         else {
             if(!ftpClient.makeDirectory(dir)) {
-                            throw new IOException("Failed to create directory" + dirPath + " error=" + ftpClient.getReplyString());
+                            throw new IOException("Failed to create directory " + dirPath + " error=" + ftpClient.getReplyString());
             }
             if(!ftpClient.changeWorkingDirectory(dir)) {
-                            throw new IOException("Failed to change to directory" + dirPath + " error=" + ftpClient.getReplyString());
+                            throw new IOException("Failed to change to directory " + dirPath + " error=" + ftpClient.getReplyString());
             }
 
         }
@@ -174,7 +174,7 @@ public class ftp_client {
         String dirName;
         String getFilePattern = "get \\w.*";
         String putFilePattern = "put \\w.*";
-        String putMultipleFilePattern = "get multiple \\w.*";
+        String putMultipleFilePattern = "putmultiple \\w.*";
 
         while(true) {
         try {
@@ -207,20 +207,20 @@ public class ftp_client {
                         }
 
                     }
-                    if (commandInput.matches(putFilePattern)) {
+
+                    if (commandInput.matches(putMultipleFilePattern)) {
                         try {
-                            if (!putFile(commandInput)) {
+                            if (!putMultipleFile(commandInput)) {
                                 System.out.println("Could not put file(s) from remote server!");
                             }
                         } catch (IOException e) {
                             System.out.println("I/O error putting remote file!");
                         }
-
                     }
 
-                    if (commandInput.matches(putMultipleFilePattern)) {
+                    if (commandInput.matches(putFilePattern)) {
                         try {
-                            if (!putMultipleFile(commandInput)) {
+                            if (!putFile(commandInput)) {
                                 System.out.println("Could not put file(s) from remote server!");
                             }
                         } catch (IOException e) {
@@ -305,6 +305,7 @@ public class ftp_client {
 
         retval = ftpClient.storeFile(splitInput[1], in);
         in.close();
+
         return retval;
     }
 
@@ -322,8 +323,8 @@ public class ftp_client {
         String [] splitInput = input.split("\\s+");
         FileInputStream in;
 
-        if(splitInput.length > 2) {
-            for (int i = 3; i < splitInput.length; ++i) {
+        if(splitInput.length > 1) {
+            for (int i = 1; i < splitInput.length; ++i) {
                 in = new FileInputStream(splitInput[i]);
                 retval = ftpClient.storeFile(splitInput[i], in);
                 in.close();

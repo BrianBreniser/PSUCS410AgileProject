@@ -32,9 +32,9 @@ public class test {
         }
         try {
             if (thesystem.equals("windows") || thesystem.equals("Windows")) {
-                pr = rt.exec("sfk-windows.exe ftpserv -port=2121 -user=testuser -pw=password");
+                pr = rt.exec("sfk-windows.exe ftpserv -port=3131 -user=testuser -pw=password -rw");
             } else {
-                pr = rt.exec("./sfk ftpserv -port=2121 -user=testuser -pw=password");
+                pr = rt.exec("./sfk ftpserv -port=3131 -user=testuser -pw=password -rw");
             }
         } catch (IOException ex) {
             System.out.println("Oops! Something wrong happened");
@@ -44,7 +44,7 @@ public class test {
         // build our ftp client
 
         ftp_client ftp = new ftp_client();
-        ftp.directSetupArgs("localhost", "testuser", "password", 2121);
+        ftp.directSetupArgs("localhost", "testuser", "password", 3131);
         ftp.setupFtp();
 
         /*
@@ -71,45 +71,59 @@ public class test {
             System.out.println("Error testing getFile()");
             ex.printStackTrace();
         }
+
         try {
-            assert (ftp.putFile("get test.txt") == true);
+            assert (ftp.putFile("put test.txt") == true);
         } catch (IOException ex) {
             System.out.println("Error testing putFile()");
             ex.printStackTrace();
         }
 
-    // tests related to making a directory on the ftp server
-    // 1. create a directory in the current working directory
-    // 2. create a directory that exists
-    // 3. create a directory with a relative path
-    // 4. create a directory along a path that partially exists
+        // tests related to making a directory on the ftp server
+        // 1. create a directory in the current working directory
+        // 2. create a directory that exists
+        // 3. create a directory with a relative path
+        // 4. create a directory along a path that partially exists
 
-    try {
-        assert (ftp.createDirectory("test") == true);
-    } catch (IOException ex) {
-        System.out.println("Unable to create directory");
-        ex.printStackTrace();
-    }
+        try {
+            assert (ftp.createDirectory("test") == true);
+        } catch (IOException ex) {
+            System.out.println("Unable to create directory");
+            ex.printStackTrace();
+        }
 
-    try {
-        assert (ftp.createDirectory("test") == true);
-    } catch (IOException ex) {
-        System.out.println("Creating a directory that exists failed");
-        ex.printStackTrace();
-    }
-    try {
-        assert (ftp.createDirectory("./test1/test2/test3") == true);
-    } catch (IOException ex) {
-        System.out.println("Unable to create directory");
-        ex.printStackTrace();
-    }
+        try {
+            assert (ftp.createDirectory("test") == true);
+        } catch (IOException ex) {
+            System.out.println("Creating a directory that exists failed");
+            ex.printStackTrace();
+        }
+        try {
+            assert (ftp.createDirectory("./test1/test2/test3") == true);
+        } catch (IOException ex) {
+            System.out.println("Unable to create directory");
+            ex.printStackTrace();
+        }
 
-    try {
-        assert (ftp.createDirectory("./test1/test2/test3/test4/test5") == true);
-    } catch (IOException ex) {
-        System.out.println("Unable to create directory");
-        ex.printStackTrace();
-    }
+        try {
+            assert (ftp.createDirectory("./test1/test2/test3/test4/test5") == true);
+        } catch (IOException ex) {
+            System.out.println("Unable to create directory");
+            ex.printStackTrace();
+        }
+
+        /**
+         * test the put multiple files method
+         * becuase of regex overlap with the put method, putmultiple is one word
+         * this is not optimal, but will work for now
+         */
+
+        try {
+            assert (ftp.putMultipleFile("putmultiple test.txt test.txt") == true);
+        } catch (IOException ex) {
+            System.out.println("unable to put multiple files on the server");
+            ex.printStackTrace();
+        }
 
         /*
          * Done running tests here -------------------------------------------------------
