@@ -2,6 +2,13 @@
  *  About:  Stores an array of Connections and all the functions to manage them
  *  Proj:   Eiusmod FTP Client
  *  Author: Geoff Maggi
+ *  TO-DO:  Write load() and save() to get user input for file
+ *          Add more error handling and better file management 
+ *          More?
+ *  Bugs:   Currently a user can edit an existing connection and create
+ *          an empty or duplicate alias. This is not a big deal in the
+ *          current implementation unless calling select(alias) which
+ *          is currently not being done.
  */
 
 import java.io.*;
@@ -24,41 +31,44 @@ public class connectionManager {
     System.out.println("----- Connection Manager -----");
     boolean done = false;
     while(!done) {
-      System.out.println();
-      listOptions();
-      System.out.print("Select an action: ");
-      int choice = input.nextInt();
-      System.out.println();
-      
-      switch(choice) {
-        case 1: //list connections
-          list();
-        break;
-        case 2: //load connections
-          load("default.con");
-        break;
-        case 3: //save connections
-          save("default.con");
-        break;
-        case 4: //select connection
-          select();
-        break;
-        case 5: //add connection
-          add();
-        break;
-        case 6: //edit connection
-          edit();
-        break;
-        case 7: //delete connection
-          delete();
-        break;
-        case 8: //exit
-          done = true;
-        break;
-        default:
-          System.out.println("Not a valid option");
-        break;
+      try {
+        System.out.println();
+        listOptions();
+        System.out.print("Select an action: ");
+        int choice = input.nextInt();
+        System.out.println();
+        
+        switch(choice) {
+          case 1: //list connections
+            list();
+          break;
+          case 2: //load connections
+            load();
+          break;
+          case 3: //save connections
+            save();
+          break;
+          case 4: //select connection
+            select();
+          break;
+          case 5: //add connection
+            add();
+          break;
+          case 6: //edit connection
+            edit();
+          break;
+          case 7: //delete connection
+            delete();
+          break;
+          case 8: //exit
+            done = true;
+          break;
+          default:
+            System.out.println("Not a valid option");
+          break;
+        }
       }
+      catch (Exception e) { } //do nothing, prompt the user again
     }
   }
 
@@ -70,6 +80,13 @@ public class connectionManager {
   }
   
   /* ----- Public Functions ----- */
+  
+  //If no path was provided prompt for one
+  //Use new path to call load(path)
+  public void load() {
+  
+  }
+  
   public void load(String path) {
     String line = null;
     try{
@@ -81,6 +98,12 @@ public class connectionManager {
       }       
     }
     catch(Exception e){ }
+  }
+  
+  //If no path was provided prompt for one
+  //Use new path to call save(path)
+  public void save() {
+  
   }
   
   public void save(String path) {
@@ -107,10 +130,16 @@ public class connectionManager {
         connections.add(con);
         //System.out.println("Added: " + con.alias);
       }
-      else
+      else {
         System.out.println("Alias already exists");
-    else
+        edit(con); //send them back to the edit screen
+        add(con); //retry
+      }
+    else {
       System.out.println("Alias cannot be empty");
+      edit(con); //send them back to the edit screen
+      add(con); //retry
+    }
   }
   
   public void edit() {
@@ -133,7 +162,7 @@ public class connectionManager {
     while(true) {
       System.out.println();
       listConnectionData(con);
-      System.out.print("Select an option:");
+      System.out.print("Select an option: ");
       int choice = input.nextInt();
       input.nextLine(); //clears the newline
       System.out.println();
@@ -186,6 +215,10 @@ public class connectionManager {
   }
   
   public void list() {
+    if(connections.size() < 1) {
+      System.out.println("No connections exist");
+      return; //no need to continue
+    }
     int i = 0;
     System.out.println("---(Alias) User@Server---");
     for(connection con: connections) {
@@ -269,6 +302,10 @@ public class connectionManager {
   
   /* ----- Print function ----- */
   public String toString() {
+    if(connections.size() < 1) {
+      return "No connections exist";
+    }
+    
     StringBuilder sb = new StringBuilder();
     for(connection con: connections) {
       sb.append(con+"\r\n");
