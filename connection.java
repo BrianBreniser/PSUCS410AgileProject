@@ -2,11 +2,13 @@
  *  About:  Stores data for a connection to the server
  *  Proj:   Eiusmod FTP Client
  *  Author: Geoff Maggi
- *  TODO:   Add encryption and decryption functions for the password
  */
 
 import com.google.gson.Gson;
-import java.util.Base64; //used for basic encrypt/decrypt
+import java.util.Base64;
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 
 public class connection {
   /* ----- Class Data ----- */
@@ -129,10 +131,33 @@ public class connection {
   
   /* ----- Private Functions ----- */
   private String encrypt(String s) {
-    return Base64.getEncoder().encodeToString(s.getBytes());
+    try{
+      Key key = getKey();
+      Cipher c = Cipher.getInstance("AES");
+      c.init(Cipher.ENCRYPT_MODE, key);
+      //encrypt it
+      byte[] enc = c.doFinal(s.getBytes());
+      return Base64.getEncoder().encodeToString(enc);
+    }
+    catch(Exception e) {return null;}
   }
   
   private String decrypt(String s) {
-    return new String(Base64.getDecoder().decode(s));
+    try{
+      Key key = getKey();
+      Cipher c = Cipher.getInstance("AES");
+      c.init(Cipher.DECRYPT_MODE, key);
+      //decrypt it
+      String temp = new String(Base64.getDecoder().decode(s));
+      byte[] dec = c.doFinal(temp.getBytes());
+      return new String(dec);
+    }
+    catch(Exception e) {return null;}
+  }
+  
+  private Key getKey() {
+    byte[] kv = "EiusmodSecretKey".getBytes(); //must be 16 bytes
+    Key key = new SecretKeySpec(kv, "AES");
+    return key;
   }
 };
