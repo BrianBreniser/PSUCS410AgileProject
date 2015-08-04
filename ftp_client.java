@@ -35,6 +35,13 @@ public class ftp_client {
         password = pass;
         port = por;
     }
+    
+    public static void directSetupArgs(connection c) {
+        server = c.server;
+        username = c.user;
+        password = c.getPassword();
+        port = c.port;
+    }
 
     private static void showServerReply(FTPClient ftpClient) {
         String[] replies = ftpClient.getReplyStrings();
@@ -169,6 +176,7 @@ public class ftp_client {
 
     private static void command_loop(FTPClient f) {
         Scanner input = new Scanner(System.in);
+        connectionManager cm = new connectionManager();
 
         String commandInput;
         String dirName;
@@ -193,6 +201,38 @@ public class ftp_client {
                     System.out.print("Directory name or relative path: ");
                     dirName = input.nextLine();
                     createDirectory(dirName);
+                    break;
+                case "connection manager":
+                case "cm":
+                    cm.run();
+                    break;
+                case "save connection":
+                case "cm save":
+                    System.out.print("file path: ");
+                    dirName = input.nextLine();
+                    cm.save(dirName);
+                    break;
+                case "load connection":
+                case "cm load":
+                    System.out.print("file path: ");
+                    dirName = input.nextLine();
+                    cm.load(dirName);
+                    break;
+                case "change connection":
+                case "connection select":
+                case "cm select":
+                case "cm change":
+                    connection c = cm.select();
+                    if(c != null) {
+                        directSetupArgs(c);
+                        setupFtp(); //reconnect
+                    }
+                    break;
+                case "new connection":
+                case "add connection":
+                case "cm new":
+                case "cm add":
+                      cm.add();
                     break;
 
                 // case "user input": correspondingMethodName();

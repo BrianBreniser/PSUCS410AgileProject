@@ -73,7 +73,7 @@ public class connectionManager {
   public void load(String path) {
     String line = null;
     try{
-      BufferedReader br = new BufferedReader(new FileReader("connections.con"));
+      BufferedReader br = new BufferedReader(new FileReader(path));
       while ((line = br.readLine()) != null) {
         connection con = new connection();
         con.setFromJson(line);
@@ -85,7 +85,7 @@ public class connectionManager {
   
   public void save(String path) {
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter("connections.con"));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(path));
       for(connection con: connections) {
         writer.write(con.toJson() + "\r\n");
       }
