@@ -68,7 +68,7 @@ public class connectionManager {
           break;
         }
       }
-      catch (Exception e) { } //do nothing, prompt the user again
+      catch (Exception e) { input.nextLine(); } //clear the stream
     }
   }
 
