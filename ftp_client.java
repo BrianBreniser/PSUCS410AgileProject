@@ -173,6 +173,7 @@ public class ftp_client {
         String commandInput;
         String dirName;
         String getFilePattern = "get \\w.*";
+        String getMultipleFilePattern = "getmultiple \\w.*";
         String putFilePattern = "put \\w.*";
         String putMultipleFilePattern = "putmultiple \\w.*";
 
@@ -200,12 +201,22 @@ public class ftp_client {
                     if (commandInput.matches(getFilePattern)) {
                         try {
                             if (!getFile(commandInput)) {
-                                System.out.println("Could not get file(s) from remote server!");
+                                System.out.println("Could not get file from remote server!");
                             }
                         } catch (IOException e) {
                             System.out.println("I/O error getting remote file!");
                         }
 
+                    }
+                    
+                    if (commandInput.matches(getMultipleFilePattern)) {
+                        try {
+                            if (!getMultipleFile(commandInput)) {
+                                System.out.println("Could not get file(s) from remote server!");
+                            }
+                        } catch (IOException e) {
+                            System.out.println("I/O error getting remote file!");
+                        }               	
                     }
 
                     if (commandInput.matches(putMultipleFilePattern)) {
@@ -284,6 +295,24 @@ public class ftp_client {
         return retval;
     }
 
+    public static boolean getMultipleFile(String input) throws IOException {
+    	boolean retval = false;
+        String [] splitInput = input.split("\\s+");
+        FileOutputStream out;
+
+        if(splitInput.length > 1) {
+            for (int i = 1; i < splitInput.length; ++i) {
+                out = new FileOutputStream(splitInput[i]);
+                retval = ftpClient.retrieveFile(splitInput[i], out);
+                out.close();
+                if (!retval) {
+                    return false;
+                }
+            }
+        }
+    	
+    	return retval;
+    }
     /**
      * @param String
      * @return boolean

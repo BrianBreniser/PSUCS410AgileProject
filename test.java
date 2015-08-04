@@ -113,11 +113,16 @@ public class test {
         }
 
         /**
-         * test the put multiple files method
-         * becuase of regex overlap with the put method, putmultiple is one word
+         * test the get/put multiple files method
+         * because of regex overlap with the get/put method, getmultiple/putmultiple is one word
          * this is not optimal, but will work for now
          */
-
+        try {
+            assert (ftp.getMultipleFile("putmultiple test.txt test.txt") == true);
+        } catch (IOException ex) {
+            System.out.println("unable to get multiple files on the server");
+            ex.printStackTrace();
+        }
         try {
             assert (ftp.putMultipleFile("putmultiple test.txt test.txt") == true);
         } catch (IOException ex) {
