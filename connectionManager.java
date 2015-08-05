@@ -84,7 +84,16 @@ public class connectionManager {
   //If no path was provided prompt for one
   //Use new path to call load(path)
   public void load() {
-  
+    String line = null;
+    try{
+      BufferedReader br = new BufferedReader(new FileReader("saved_connection_information.json"));
+      while ((line = br.readLine()) != null) {
+        connection con = new connection();
+        con.setFromJson(line);
+        add(con);
+      }
+    }
+    catch(Exception e){ }
   }
   
   public void load(String path) {
@@ -100,10 +109,17 @@ public class connectionManager {
     catch(Exception e){ }
   }
   
-  //If no path was provided prompt for one
-  //Use new path to call save(path)
+  //If no path was provided use a default one
   public void save() {
-  
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter("saved_connection_information.json");
+      for(connection con: connections) {
+        writer.write(con.toJson() + "\r\n");
+      }
+      writer.close( );
+      System.out.println("Saved Successfully");
+    }
+    catch ( IOException e) { }
   }
   
   public void save(String path) {
