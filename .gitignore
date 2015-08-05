@@ -19,3 +19,5 @@ hs_err_pid*
 # more intellij crap
 *.iml
 out/
+
+.json

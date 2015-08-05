@@ -1,7 +1,7 @@
 /*
  * How to use this module:
  * Run this program after running make:
- *   java -cp .:./lib:./lib/commons-net-3.3.jar -ea test
+ *   java -cp .:./lib:./lib/commons-net-3.3.jar:./lib/gson-2.3.1.jar -ea test
  * need the -ea options or else the assert statements WILL NOT RUN
  * I recommend doing this from the command line
  * in intellij IDEA it works in the included terminal, alt+f12

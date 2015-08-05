@@ -80,13 +80,39 @@ public class connectionManager {
   }
   
   /* ----- Public Functions ----- */
+
+  // grab saved user connection information on startup
+  public void findUserConnection(connection theircon) {
+    load();
+    if(connections.size() > 0) {
+      int i = 0;
+      System.out.println("---(Alias) User@Server---");
+      for(connection con: connections) {
+        System.out.println(i + ". (" + con.alias + ") " + con.user + "@" + con.server);
+        i++;
+      }
+
+      Scanner input = new Scanner(System.in);
+      System.out.print("Select an option to load: ");
+      int choice = input.nextInt();
+
+      theircon.server = connections.get(choice).server;
+      theircon.user = connections.get(choice).user;
+      theircon.port = connections.get(choice).port;
+      theircon.setPassword(connections.get(choice).getPassword());
+
+    }
+    else {
+      System.out.println("--- no saved connections found ---");
+    }
+  }
   
   //If no path was provided prompt for one
   //Use new path to call load(path)
   public void load() {
     String line = null;
     try{
-      BufferedReader br = new BufferedReader(new FileReader("saved_connection_information.json"));
+      BufferedReader br = new BufferedReader(new FileReader("./saved_connection_information.json"));
       while ((line = br.readLine()) != null) {
         connection con = new connection();
         con.setFromJson(line);
@@ -112,14 +138,16 @@ public class connectionManager {
   //If no path was provided use a default one
   public void save() {
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter("saved_connection_information.json");
+      BufferedWriter writer = new BufferedWriter(new FileWriter("./saved_connection_information.json"));
       for(connection con: connections) {
         writer.write(con.toJson() + "\r\n");
       }
       writer.close( );
       System.out.println("Saved Successfully");
     }
-    catch ( IOException e) { }
+    catch ( IOException e) {
+      e.printStackTrace();
+    }
   }
   
   public void save(String path) {

@@ -161,8 +161,22 @@ public class ftp_client {
 
 
     public static void main(String[] args) {
-        // Set up server, username, and password to prepare FTP client
-        setupServerUnamePass(args);
+        // try to load connection information first
+        connection myCon = new connection();
+        connectionManager myCm = new connectionManager();
+        myCm.findUserConnection(myCon);
+        if(!myCon.server.equals("")) {
+            System.out.println(myCon.server);
+            System.out.println(myCon.user);
+            System.out.println(myCon.getPassword());
+            server = myCon.server;
+            username = myCon.user;
+            password = myCon.getPassword();
+        }
+        else {
+            // Set up server, username, and password to prepare FTP client
+            setupServerUnamePass(args);
+        }
 
         // Set up ftp client with parameters
         setupFtp();
