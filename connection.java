@@ -20,7 +20,7 @@ public class connection {
   private String password = ""; //This is the encrypted password
 
   /* ----- main() for testing ----- */
-  /*public static void main(String [] args) {
+  public static void main(String [] args) {
     System.out.println("Running connection tests");
     connection con = new connection("test", "ftptest.com", 2021, "user1", "password1!");
     System.out.println(con);
@@ -36,7 +36,7 @@ public class connection {
     newCon.setFromJson(json);
     System.out.println(newCon);
     System.out.println(newCon.getPassword()); //test the password
-  }*/
+  }
 
   /* ----- Initializers ----- */
   connection() { } //just use defaults
@@ -134,7 +134,7 @@ public class connection {
   private String encrypt(String s) {
     try{
       Key key = getKey();
-      Cipher c = Cipher.getInstance("AES");
+      Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
       c.init(Cipher.ENCRYPT_MODE, key);
       //encrypt it
       byte[] enc = c.doFinal(s.getBytes(Charset.defaultCharset()));
@@ -147,7 +147,7 @@ public class connection {
   private String decrypt(String s) {
     try{
       Key key = getKey();
-      Cipher c = Cipher.getInstance("AES");
+      Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
       c.init(Cipher.DECRYPT_MODE, key);
       //decrypt it
       //String temp = new String(Base64.getDecoder().decode(s));
