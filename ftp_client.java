@@ -18,9 +18,6 @@ import org.apache.commons.net.ftp.FTPReply;
 import java.net.InetAddress;
 import java.util.Scanner;
 
-//import it.sauronsoftware.ftp4j.FTPClient;
-//import it.sauronsoftware.ftp4j.FTPReply;
-
 public class ftp_client {
 
     private static String server;
