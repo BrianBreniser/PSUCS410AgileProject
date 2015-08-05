@@ -221,6 +221,9 @@ public class ftp_client {
                 case "cm change":
                     connection c = cm.select();
                     if(c != null) {
+                        if(f.isConnected()) {
+                          f.disconnect();
+                        }
                         directSetupArgs(c);
                         setupFtp(); //reconnect
                     }
