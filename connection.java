@@ -5,12 +5,7 @@
  */
 
 import com.google.gson.Gson;
-<<<<<<< HEAD
-//import java.util.Base64;
-import java.security.*;
-=======
 import org.apache.commons.net.util.Base64;
->>>>>>> geoff
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -136,42 +131,22 @@ public class connection {
   /* ----- Private Functions ----- */
   private String encrypt(String s) {
     try{
-<<<<<<< HEAD
-      Key key = getKey();
-      Cipher c = Cipher.getInstance("AES");
-      c.init(Cipher.ENCRYPT_MODE, key);
-      //encrypt it
-      byte[] enc = c.doFinal(s.getBytes());
-      //return Base64.getEncoder().encodeToString(enc);
-	  return new String(enc);
-=======
       SecretKeySpec key = getKey();
       Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
       cipher.init(Cipher.ENCRYPT_MODE, key);
       final String encryptedString = Base64.encodeBase64String(cipher.doFinal(s.getBytes()));
       return encryptedString;
->>>>>>> geoff
     }
     catch(Exception e) {return null;}
   }
   
   private String decrypt(String s) {
     try{
-<<<<<<< HEAD
-      Key key = getKey();
-      Cipher c = Cipher.getInstance("AES");
-      c.init(Cipher.DECRYPT_MODE, key);
-      //decrypt it
-      //String temp = new String(Base64.getDecoder().decode(s));
-      byte[] dec = c.doFinal(s.getBytes());
-      return new String(dec);
-=======
       SecretKeySpec key = getKey();
       Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
       cipher.init(Cipher.DECRYPT_MODE, key);
       final String decryptedString = new String(cipher.doFinal(Base64.decodeBase64(s)));
       return decryptedString;
->>>>>>> geoff
     }
     catch(Exception e) {return null;}
   }
