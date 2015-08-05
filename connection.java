@@ -5,9 +5,7 @@
  */
 
 import com.google.gson.Gson;
-//import java.util.Base64;
-import java.nio.charset.Charset;
-import java.security.*;
+import org.apache.commons.net.util.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -20,7 +18,7 @@ public class connection {
   private String password = ""; //This is the encrypted password
 
   /* ----- main() for testing ----- */
-  public static void main(String [] args) {
+  /*public static void main(String [] args) {
     System.out.println("Running connection tests");
     connection con = new connection("test", "ftptest.com", 2021, "user1", "password1!");
     System.out.println(con);
@@ -36,7 +34,7 @@ public class connection {
     newCon.setFromJson(json);
     System.out.println(newCon);
     System.out.println(newCon.getPassword()); //test the password
-  }
+  }*/
 
   /* ----- Initializers ----- */
   connection() { } //just use defaults
@@ -133,33 +131,29 @@ public class connection {
   /* ----- Private Functions ----- */
   private String encrypt(String s) {
     try{
-      SecretKey key = getKey();
-      Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
-      c.init(Cipher.ENCRYPT_MODE, key);
-      //encrypt it
-      byte[] enc = c.doFinal(s.getBytes(Charset.defaultCharset()));
-      //return Base64.getEncoder().encodeToString(enc);
-	  return new String(enc,Charset.defaultCharset());
+      SecretKeySpec key = getKey();
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      cipher.init(Cipher.ENCRYPT_MODE, key);
+      final String encryptedString = Base64.encodeBase64String(cipher.doFinal(s.getBytes()));
+      return encryptedString;
     }
     catch(Exception e) {return null;}
   }
   
   private String decrypt(String s) {
     try{
-      SecretKey key = getKey();
-      Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
-      c.init(Cipher.DECRYPT_MODE, key);
-      //decrypt it
-      //String temp = new String(Base64.getDecoder().decode(s));
-      byte[] dec = c.doFinal(s.getBytes(Charset.defaultCharset()));
-      return new String(dec,Charset.defaultCharset());
+      SecretKeySpec key = getKey();
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+      cipher.init(Cipher.DECRYPT_MODE, key);
+      final String decryptedString = new String(cipher.doFinal(Base64.decodeBase64(s)));
+      return decryptedString;
     }
     catch(Exception e) {return null;}
   }
   
-  private SecretKey getKey() {
-    byte[] kv = "EiusmodSecretKey".getBytes(Charset.defaultCharset()); //must be 16 bytes
-    SecretKey key = new SecretKeySpec(kv,0,kv.length,"AES");
+  private SecretKeySpec getKey() {
+    byte[] kv = "EiusmodSecretKey".getBytes(); //must be 16 bytes
+    SecretKeySpec key = new SecretKeySpec(kv, "AES");
     return key;
   }
 };
