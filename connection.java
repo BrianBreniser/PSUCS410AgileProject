@@ -133,7 +133,7 @@ public class connection {
   /* ----- Private Functions ----- */
   private String encrypt(String s) {
     try{
-      Key key = getKey();
+      SecretKey key = getKey();
       Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
       c.init(Cipher.ENCRYPT_MODE, key);
       //encrypt it
@@ -146,7 +146,7 @@ public class connection {
   
   private String decrypt(String s) {
     try{
-      Key key = getKey();
+      SecretKey key = getKey();
       Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
       c.init(Cipher.DECRYPT_MODE, key);
       //decrypt it
@@ -157,9 +157,9 @@ public class connection {
     catch(Exception e) {return null;}
   }
   
-  private Key getKey() {
+  private SecretKey getKey() {
     byte[] kv = "EiusmodSecretKey".getBytes(Charset.defaultCharset()); //must be 16 bytes
-    Key key = new SecretKeySpec(kv, "AES");
+    SecretKey key = new SecretKeySpec(kv,0,kv.length,"AES");
     return key;
   }
 };
