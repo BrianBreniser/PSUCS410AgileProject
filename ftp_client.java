@@ -17,6 +17,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import java.net.InetAddress;
 import java.util.Scanner;
+import java.io.File;
 
 public class ftp_client {
 
@@ -181,7 +182,7 @@ public class ftp_client {
         String getMultipleFilePattern = "getmultiple \\w.*";
         String putFilePattern = "put \\w.*";
         String putMultipleFilePattern = "putmultiple \\w.*";
-
+        String currentDir = System.getProperty("user.dir");
         while(true) {
         try {
                 System.out.print("Command: ");
@@ -234,7 +235,9 @@ public class ftp_client {
                 case "cm add":
                       cm.add();
                     break;
-
+                case "list local":
+                    listLocalFiles(currentDir);
+                    break;
                 // case "user input": correspondingMethodName();
 
                 default:
@@ -403,6 +406,22 @@ public class ftp_client {
             }
         }
 
+        return true;
+    }
+
+    public static boolean listLocalFiles(String userdir) {
+        try {
+            File folder = new File(userdir);
+            File[] fileList = folder.listFiles();
+            System.out.println("Current Directory: " + userdir);
+            for (int i = 0; i < fileList.length; ++i) {
+                if (fileList[i].isFile()) {
+                    System.out.println("f: " + fileList[i].getName());
+                } else if (fileList[i].isDirectory()) {
+                    System.out.println("d: " + fileList[i].getName());
+                }
+            }
+        } catch(Exception e) {return false;}
         return true;
     }
 }
