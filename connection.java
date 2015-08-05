@@ -20,7 +20,7 @@ public class connection {
   private String password = ""; //This is the encrypted password
 
   /* ----- main() for testing ----- */
-  public static void main(String [] args) {
+  /*public static void main(String [] args) {
     System.out.println("Running connection tests");
     connection con = new connection("test", "ftptest.com", 2021, "user1", "password1!");
     System.out.println(con);
@@ -36,7 +36,7 @@ public class connection {
     newCon.setFromJson(json);
     System.out.println(newCon);
     System.out.println(newCon.getPassword()); //test the password
-  }
+  }*/
 
   /* ----- Initializers ----- */
   connection() { } //just use defaults
