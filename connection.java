@@ -93,6 +93,9 @@ public class connection {
   }
   
   public void copy(connection con) { //messy :(
+    if(con==null) {
+      return; //Nothing to do....
+    }
     this.alias = con.alias;
     this.server = con.server;
     this.port = con.port;

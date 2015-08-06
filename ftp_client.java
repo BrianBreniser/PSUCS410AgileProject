@@ -166,9 +166,9 @@ public class ftp_client {
         connectionManager myCm = new connectionManager();
         myCm.findUserConnection(myCon);
         if(!myCon.server.equals("")) {
-            System.out.println(myCon.server);
-            System.out.println(myCon.user);
-            System.out.println(myCon.getPassword());
+            //System.out.println(myCon.server);
+            //System.out.println(myCon.user);
+            //System.out.println(myCon.getPassword());
             server = myCon.server;
             username = myCon.user;
             password = myCon.getPassword();
