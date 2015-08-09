@@ -99,14 +99,14 @@ public class test {
             ex.printStackTrace();
         }
         try {
-            assert (ftp.createDirectory("./test1/test2/test3") == true);
+            assert (ftp.createDirectory("/test1/test2/test3") == true);
         } catch (IOException ex) {
             System.out.println("Unable to create directory");
             ex.printStackTrace();
         }
 
         try {
-            assert (ftp.createDirectory("./test1/test2/test3/test4/test5") == true);
+            assert (ftp.createDirectory("/test1/test2/test3/test4/test5") == true);
         } catch (IOException ex) {
             System.out.println("Unable to create directory");
             ex.printStackTrace();
