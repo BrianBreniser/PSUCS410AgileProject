@@ -129,6 +129,26 @@ public class ftp_client {
 
     }
 
+    public static void usage() {
+
+	System.out.println("---------------------------- Command list ----------------------------");
+	System.out.println("exit				| Shut down the client");
+	System.out.println("get address			| Get remote address");
+	System.out.println("create dir			| Create a directory on server");
+	System.out.println("connection manager		| Start connection manager");
+	System.out.println("save connection			| Save current connection info");
+	System.out.println("load connection			| Load alternate connection info");
+	System.out.println("change connection		| Switch to a new connection");
+	System.out.println("list local			| List files in local machines cwd");
+	System.out.println("get <file>			| Get file from server");
+	System.out.println("getmultiple <list of files>	| Get multiple files from server");
+	System.out.println("put <file>			| Send file to server");
+	System.out.println("putmultiple <list of files>	| Send multiple files to server");
+	System.out.println();
+	System.out.println();
+    }
+
+
     //Creates a new directory on the ftp server
     public static boolean createDirectory(String dirPath) throws IOException {
 
@@ -203,6 +223,9 @@ public class ftp_client {
                 commandInput = input.nextLine();
 
             switch (commandInput) {
+		case "help":
+		    usage();
+		    break;
                 case "exit":
                     exit();
                     break;
@@ -296,7 +319,10 @@ public class ftp_client {
                         }
 
                     }
-
+		    
+		    else {
+			usage();
+		    }
                 }
         }
             catch (IOException ex) {
