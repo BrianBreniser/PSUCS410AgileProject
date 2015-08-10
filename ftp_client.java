@@ -464,4 +464,36 @@ public class ftp_client {
         } catch(Exception e) {return false;}
         return true;
     }
+    
+    public static boolean listRemoteFiles() throws IOException{
+        try {
+            String[] files = ftpClient.listNames();
+            for (int i = 0; i < files.length; i++) {
+                System.out.println(files[i]);
+            }
+            return true;
+        }catch(IOException ex){
+            return false;
+        }
+    }
+
+    public static boolean removeDir(String dir) throws IOException{
+        try{
+            ftpClient.changeWorkingDirectory(dir);
+            ftpClient.changeWorkingDirectory("..");
+            ftpClient.removeDirectory(dir);
+            return true;
+        }catch (IOException ex){
+            return false;
+        }
+    }
+
+    public static boolean removeFile(String file) throws IOException{
+        try{
+            ftpClient.deleteFile(file);
+            return true;
+        }catch (IOException ex){
+            return false;
+        }
+    }
 }

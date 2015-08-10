@@ -129,6 +129,44 @@ public class test {
             System.out.println("unable to put multiple files on the server");
             ex.printStackTrace();
         }
+        
+        //This section test out list current dir
+        try {
+            assert (ftp.listRemoteFiles() == true);
+        }catch (IOException ex){
+            System.out.println("Error: listRemoteList");
+            ex.printStackTrace();
+        }
+
+        //This Section test remove dir.
+        //create dir has been verified to work and is acceptable to create a dir to delete.
+        try {
+            assert (ftp.createDirectory("testss") == true);
+        } catch (IOException ex) {
+            System.out.println("Unable to create directory");
+            ex.printStackTrace();
+        }
+
+        try {
+            assert(ftp.removeDir("testss") == true);
+        }catch (IOException ex){
+            System.out.println("Error: remove dir");
+            ex.printStackTrace();
+        }
+
+        try {
+            assert (ftp.putFile("put test.txt") == true);
+        } catch (IOException ex) {
+            System.out.println("Error testing putFile()");
+            ex.printStackTrace();
+        }
+
+        try {
+            assert(ftp.removeFile("test.txt") == true);
+        }catch (IOException ex){
+            System.out.println("Error: remove dir");
+            ex.printStackTrace();
+        }
 
         /*
          * Done running tests here -------------------------------------------------------
