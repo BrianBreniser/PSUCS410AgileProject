@@ -144,6 +144,9 @@ public class ftp_client {
 	System.out.println("getmultiple <list of files>	| Get multiple files from server");
 	System.out.println("put <file>			| Send file to server");
 	System.out.println("putmultiple <list of files>	| Send multiple files to server");
+	System.out.println("remove file			| Delete a file on remote server");
+	System.out.println("remove dir			| Delete a directory on remote server");
+	System.out.println("list remote			| List files on remote servers cwd");
 	System.out.println();
 	System.out.println();
     }
@@ -212,6 +215,7 @@ public class ftp_client {
 
         String commandInput;
         String dirName;
+	String fileName;
         String getFilePattern = "get \\w.*";
         String getMultipleFilePattern = "getmultiple \\w.*";
         String putFilePattern = "put \\w.*";
@@ -236,6 +240,19 @@ public class ftp_client {
                     System.out.print("Directory name or relative path: ");
                     dirName = input.nextLine();
                     createDirectory(dirName);
+                    break;
+		case "list remote":
+		    listRemoteFiles();
+		    break;
+		case "remove dir":
+                    System.out.print("Directory name to be removed: ");
+                    dirName = input.nextLine();
+                    removeDir(dirName);
+                    break;
+		case "remove file":
+                    System.out.print("File name to be removed: ");
+                    fileName = input.nextLine();
+                    removeFile(fileName);
                     break;
                 case "connection manager":
                 case "cm":
